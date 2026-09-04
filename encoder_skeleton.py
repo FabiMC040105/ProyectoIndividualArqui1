@@ -158,9 +158,41 @@ def encode_instruction(instruction: str) -> int:
 
         return word
 
+    elif formato == "I":
+        if len(operands) != 3:
+            raise ValueError("Una instrucción tipo I requiere 3 operandos")
+
+        if info["kind"] == "arith":
+            rd = parse_register(operands[0])
+            rs1 = parse_register(operands[1])
+            imm = int(operands[2])
+
+        elif info["kind"] == "load":
+            rd = parse_register(operands[0])
+            imm = int(operands[1])
+            rs1 = parse_register(operands[2])
+
+        if imm < -2048 or imm > 2047:
+            raise ValueError("Inmediato fuera de rango para formato I")
+
+        opcode = info["opcode"]
+        funct3 = info["funct3"]
+
+        imm12 = imm & 0xFFF
+
+        word = (
+            (imm12 << 20)
+            | (rs1 << 15)
+            | (funct3 << 12)
+            | (rd << 7)
+            | opcode
+        )
+
+        return word
+
     raise NotImplementedError(f"Formato {formato} pendiente de implementar")
 def explain_instruction(instruction: str, word: int) -> str:
-    
+
     return f"Binario: {word:032b}"
 
 def main():
