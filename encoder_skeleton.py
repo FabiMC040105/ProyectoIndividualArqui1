@@ -220,6 +220,43 @@ def encode_instruction(instruction: str) -> int:
 
         return word
 
+    elif formato == "B":
+        if len(operands) != 3:
+            raise ValueError("Una instrucción tipo B requiere 3 operandos")
+
+        rs1 = parse_register(operands[0])
+        rs2 = parse_register(operands[1])
+        imm = int(operands[2])
+
+        if imm < -4096 or imm > 4094:
+            raise ValueError("Inmediato fuera de rango para formato B")
+
+        if imm % 2 != 0:
+            raise ValueError("El desplazamiento de una instrucción B debe ser par")
+
+        opcode = info["opcode"]
+        funct3 = info["funct3"]
+
+        imm13 = imm & 0x1FFF
+
+        imm_12 = (imm13 >> 12) & 0x1
+        imm_10_5 = (imm13 >> 5) & 0x3F
+        imm_4_1 = (imm13 >> 1) & 0xF
+        imm_11 = (imm13 >> 11) & 0x1
+
+        word = (
+            (imm_12 << 31)
+            | (imm_10_5 << 25)
+            | (rs2 << 20)
+            | (rs1 << 15)
+            | (funct3 << 12)
+            | (imm_4_1 << 8)
+            | (imm_11 << 7)
+            | opcode
+        )
+
+        return word
+
     raise NotImplementedError(f"Formato {formato} pendiente de implementar")
 def explain_instruction(instruction: str, word: int) -> str:
 
