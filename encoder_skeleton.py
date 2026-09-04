@@ -127,33 +127,41 @@ def parse_register(reg):
 
 
 def encode_instruction(instruction: str) -> int:
-    """
-    Recibe una instrucción como texto, p. ej. "add x5, x6, x7", y debe
-    retornar su codificación de 32 bits como entero (0 <= valor < 2**32).
+    mnemonic, operands = parse_instruction(instruction)
 
-    Debe soportar únicamente las instrucciones en SOPORTADAS. Los valores
-    de opcode/funct3/funct7 de cada una NO se proveen aquí: deben
-    investigarse en el manual oficial de la ISA RISC-V (ver referencia en
-    la especificación) y documentarse en el README.
-    """
-    # TODO: implementar. Sugerencia: parsear el mnemónico y los operandos,
-    # despachar según el formato (R/I/S/B), y ensamblar los campos con
-    # operaciones de bits.
-    raise NotImplementedError("encode_instruction: pendiente de implementar")
+    if mnemonic not in INSTRUCTIONS:
+        raise ValueError(f"Instrucción no soportada: {mnemonic}")
 
+    info = INSTRUCTIONS[mnemonic]
+    formato = info["format"]
 
+    if formato == "R":
+        if len(operands) != 3:
+            raise ValueError("Una instrucción tipo R requiere 3 operandos")
+
+        rd = parse_register(operands[0])
+        rs1 = parse_register(operands[1])
+        rs2 = parse_register(operands[2])
+
+        opcode = info["opcode"]
+        funct3 = info["funct3"]
+        funct7 = info["funct7"]
+
+        word = (
+            (funct7 << 25)
+            | (rs2 << 20)
+            | (rs1 << 15)
+            | (funct3 << 12)
+            | (rd << 7)
+            | opcode
+        )
+
+        return word
+
+    raise NotImplementedError(f"Formato {formato} pendiente de implementar")
 def explain_instruction(instruction: str, word: int) -> str:
-    """
-    Debe retornar un texto (para imprimirse en pantalla) que muestre, de
-    forma visual, los 32 bits de 'word' divididos en los campos del
-    formato correspondiente (R, I, S o B) — indicando el rango de bits y
-    el valor de cada campo — junto con una breve explicación de cada uno.
-    El formato visual (colores, tabla, arte ASCII, etc.) queda a su
-    criterio, siempre que sea claro.
-    """
-    # TODO: implementar.
-    raise NotImplementedError("explain_instruction: pendiente de implementar")
-
+    
+    return f"Binario: {word:032b}"
 
 def main():
     if len(sys.argv) != 2:
