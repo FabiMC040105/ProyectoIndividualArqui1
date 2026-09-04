@@ -17,6 +17,32 @@ import sys
 SOPORTADAS = ["add", "sub", "and", "or", "addi", "andi",
               "lw", "lb", "sw", "sb", "beq", "bne"]
 
+def parse_instruction(instruction):
+    texto = instruction.lower()
+
+    texto = texto.replace(",", " ")
+    texto = texto.replace("(", " ")
+    texto = texto.replace(")", " ")
+
+    tokens = texto.split()
+
+    mnemonic = tokens[0]
+    operands = tokens[1:]
+
+    return mnemonic, operands
+
+
+def parse_register(reg):
+    if not reg.startswith("x"):
+        raise ValueError(f"Registro inválido: {reg}")
+
+    numero = int(reg[1:])
+
+    if numero < 0 or numero > 31:
+        raise ValueError(f"Registro fuera de rango: {reg}")
+
+    return numero
+
 
 def encode_instruction(instruction: str) -> int:
     """
