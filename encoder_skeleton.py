@@ -17,6 +17,88 @@ import sys
 SOPORTADAS = ["add", "sub", "and", "or", "addi", "andi",
               "lw", "lb", "sw", "sb", "beq", "bne"]
 
+
+INSTRUCTIONS = {
+    # Formato R
+    "add": {
+        "format": "R",
+        "opcode": 0b0110011,
+        "funct3": 0b000,
+        "funct7": 0b0000000
+    },
+    "sub": {
+        "format": "R",
+        "opcode": 0b0110011,
+        "funct3": 0b000,
+        "funct7": 0b0100000
+    },
+    "and": {
+        "format": "R",
+        "opcode": 0b0110011,
+        "funct3": 0b111,
+        "funct7": 0b0000000
+    },
+    "or": {
+        "format": "R",
+        "opcode": 0b0110011,
+        "funct3": 0b110,
+        "funct7": 0b0000000
+    },
+
+    # Formato I - aritméticas
+    "addi": {
+        "format": "I",
+        "kind": "arith",
+        "opcode": 0b0010011,
+        "funct3": 0b000
+    },
+    "andi": {
+        "format": "I",
+        "kind": "arith",
+        "opcode": 0b0010011,
+        "funct3": 0b111
+    },
+
+    # Formato I - cargas
+    "lw": {
+        "format": "I",
+        "kind": "load",
+        "opcode": 0b0000011,
+        "funct3": 0b010
+    },
+    "lb": {
+        "format": "I",
+        "kind": "load",
+        "opcode": 0b0000011,
+        "funct3": 0b000
+    },
+
+    # Formato S
+    "sw": {
+        "format": "S",
+        "opcode": 0b0100011,
+        "funct3": 0b010
+    },
+    "sb": {
+        "format": "S",
+        "opcode": 0b0100011,
+        "funct3": 0b000
+    },
+
+    # Formato B
+    "beq": {
+        "format": "B",
+        "opcode": 0b1100011,
+        "funct3": 0b000
+    },
+    "bne": {
+        "format": "B",
+        "opcode": 0b1100011,
+        "funct3": 0b001
+    }
+}
+
+
 def parse_instruction(instruction):
     texto = instruction.lower()
 
