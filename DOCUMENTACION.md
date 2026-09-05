@@ -612,4 +612,4 @@ y la salida mantiene la línea:
 HEX: 0xXXXXXXXX
 ```
 
-para permitir su verificación automática.+
+para permitir su verificación automática.
